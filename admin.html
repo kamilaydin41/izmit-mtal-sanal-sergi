@@ -1,6 +1,154 @@
-<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sergi Yönetimi</title><link rel="stylesheet" href="style.css"></head><body>
-<div id="login"><div class="wall" aria-hidden="true"><i class="fr" style="left:12%;top:10%;width:34%;height:30%"></i><i class="fr" style="left:52%;top:6%;width:22%;height:40%"></i><p class="cap">Okul Sanal Sergisi</p></div><div class="door"><form id="lf"><h1>Yönetim girişi</h1><p class="sub">Supabase Authentication bölümünde oluşturduğunuz kullanıcı ile giriş yapın.</p><label>E-posta<input id="u" type="email" autocomplete="username" required></label><label>Şifre<span class="pw"><input id="p" type="password" autocomplete="current-password" required><button type="button" id="tg" class="alt">Göster</button></span></label><p id="err" class="err" role="alert"></p><button id="go">Giriş yap</button><a href="index.html">Sergiye dön</a></form></div></div>
-<div id="app" class="hidden"><header class="top"><h1>Sanal Sergi Yönetimi</h1><span><a href="index.html">Sergiyi gör</a> &nbsp; <button class="alt" id="out" style="color:#fff;border-color:#fff">Çıkış</button></span></header>
-<main><section class="settings-panel"><h2>Okul ve tabela ayarları</h2><form id="settings-form" class="config-form"><label>Okul adı<input id="school-name" maxlength="160" required placeholder="Örnek Anadolu Lisesi"></label><label>Sergi başlığı<input id="exhibition-title" maxlength="100" required value="Sanal Sergi"></label><label>Okul logosu (isteğe bağlı)<input id="logo-file" type="file" accept="image/png,image/jpeg,image/webp"></label><div id="logo-current"></div><div><button type="submit">Okul bilgilerini kaydet</button> <button type="button" class="alt" id="remove-logo">Logoyu kaldır</button></div></form></section>
-<section class="settings-panel"><h2>Bölümler</h2><p class="sub">Her okul istediği sayıda bölüm ekleyebilir, kontenjanı ve sıralamayı değiştirebilir.</p><form id="add-category" class="category-form"><label>Bölüm adı<input id="new-name" required maxlength="100" placeholder="Örn. Bilişim Teknolojileri"></label><label>Fotoğraf kapasitesi<input id="new-quota" type="number" required min="1" max="200" value="10"></label><label>Renk<input id="new-color" type="color" value="#2f6fb3"></label><button type="submit">+ Bölüm ekle</button></form><div id="category-controls"></div></section>
-<h2>Fotoğraf yönetimi</h2><p id="status" class="err" role="status"></p><div id="list"></div></main></div><script type="module" src="admin.js"></script></body></html>
+
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sergi Yönetimi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="login">
+  <div class="wall" aria-hidden="true">
+    <i class="fr" style="left:12%;top:10%;width:34%;height:30%"></i>
+    <i class="fr" style="left:52%;top:6%;width:22%;height:40%"></i>
+    <p class="cap">Okul Sanal Sergisi</p>
+  </div>
+
+  <div class="door">
+    <form id="lf">
+      <h1>Yönetim girişi</h1>
+      <p class="sub">
+        Supabase Authentication bölümünde
+        oluşturduğunuz kullanıcı ile giriş yapın.
+      </p>
+
+      <label>
+        E-posta
+        <input id="u" type="email"
+          autocomplete="username" required>
+      </label>
+
+      <label>
+        Şifre
+        <span class="pw">
+          <input id="p" type="password"
+            autocomplete="current-password" required>
+          <button type="button" id="tg" class="alt">
+            Göster
+          </button>
+        </span>
+      </label>
+
+      <p style="margin:12px 0">
+        <a href="#" id="forgot">Şifremi unuttum</a>
+      </p>
+
+      <p id="err" class="err" role="alert"></p>
+
+      <button id="go">Giriş yap</button>
+
+      <a href="index.html">Sergiye dön</a>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+
+  <header class="top">
+    <h1>Sanal Sergi Yönetimi</h1>
+    <span>
+      <a href="index.html">Sergiyi gör</a>
+      &nbsp;
+      <button class="alt" id="out"
+        style="color:#fff;border-color:#fff">
+        Çıkış
+      </button>
+    </span>
+  </header>
+
+  <main>
+
+    <section class="settings-panel">
+      <h2>Okul ve tabela ayarları</h2>
+
+      <form id="settings-form" class="config-form">
+
+        <label>
+          Okul adı
+          <input id="school-name" maxlength="160"
+            required placeholder="Örnek Anadolu Lisesi">
+        </label>
+
+        <label>
+          Sergi başlığı
+          <input id="exhibition-title" maxlength="100"
+            required value="Sanal Sergi">
+        </label>
+
+        <label>
+          Okul logosu (isteğe bağlı)
+          <input id="logo-file" type="file"
+            accept="image/png,image/jpeg,image/webp">
+        </label>
+
+        <div id="logo-current"></div>
+
+        <div>
+          <button type="submit">
+            Okul bilgilerini kaydet
+          </button>
+          <button type="button" class="alt" id="remove-logo">
+            Logoyu kaldır
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <section class="settings-panel">
+      <h2>Bölümler</h2>
+
+      <p class="sub">
+        Her okul istediği sayıda bölüm ekleyebilir,
+        kontenjanı ve sıralamayı değiştirebilir.
+      </p>
+
+      <form id="add-category" class="category-form">
+
+        <label>
+          Bölüm adı
+          <input id="new-name" required maxlength="100"
+            placeholder="Örn. Bilişim Teknolojileri">
+        </label>
+
+        <label>
+          Fotoğraf kapasitesi
+          <input id="new-quota" type="number"
+            required min="1" max="200" value="10">
+        </label>
+
+        <label>
+          Renk
+          <input id="new-color" type="color" value="#2f6fb3">
+        </label>
+
+        <button type="submit">+ Bölüm ekle</button>
+
+      </form>
+
+      <div id="category-controls"></div>
+    </section>
+
+    <h2>Fotoğraf yönetimi</h2>
+    <p id="status" class="err" role="status"></p>
+    <div id="list"></div>
+
+  </main>
+</div>
+
+<script type="module" src="admin.js"></script>
+
+</body>
+</html>
