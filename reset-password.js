@@ -4,36 +4,27 @@ import { sb } from "./api.js";
 const form = document.querySelector("#reset-form");
 const message = document.querySelector("#message");
 
-const params = new URLSearchParams(location.search);
-const tokenHash = params.get("token_hash");
-const type = params.get("type");
+// Supabase, e-posta bağlantısından gelen oturumu
+// URL üzerinden otomatik olarak doğrular.
+async function checkRecoverySession() {
+  message.textContent = "Bağlantı kontrol ediliyor...";
 
-async function verifyLink() {
-  if (!tokenHash || type !== "recovery") {
+  const { data, error } = await sb.auth.getSession();
+
+  if (error || !data.session) {
     message.textContent =
-      "Şifre yenileme bağlantısı geçersiz. Yeni bir bağlantı isteyin.";
+      "Şifre yenileme bağlantısı geçersiz veya süresi dolmuş. Yeniden şifre sıfırlama isteği gönderin.";
     return;
   }
 
-  message.textContent = "Bağlantı doğrulanıyor...";
+  message.textContent =
+    "Bağlantı doğrulandı. Yeni şifrenizi belirleyebilirsiniz.";
 
-  const { error } = await sb.auth.verifyOtp({
-    token_hash: tokenHash,
-    type: "recovery"
-  });
-
-  if (error) {
-    message.textContent =
-      "Bağlantının süresi dolmuş veya bağlantı geçersiz. Yeni bir şifre yenileme e-postası isteyin.";
-    return;
-  }
-
-  message.textContent = "Bağlantı doğrulandı. Yeni şifrenizi belirleyebilirsiniz.";
   form.classList.remove("hidden");
 }
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
   const password = document.querySelector("#password").value;
   const password2 = document.querySelector("#password2").value;
@@ -44,7 +35,7 @@ form.addEventListener("submit", async (e) => {
   }
 
   if (password !== password2) {
-    message.textContent = "Şifreler birbiriyle eşleşmiyor.";
+    message.textContent = "Şifreler eşleşmiyor.";
     return;
   }
 
@@ -59,11 +50,13 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  message.textContent = "Şifreniz başarıyla güncellendi. Yönetim paneline yönlendiriliyorsunuz.";
+  message.textContent =
+    "Şifreniz başarıyla güncellendi. Yönetim paneline yönlendiriliyorsunuz.";
 
-  setTimeout(() => {
+  setTimeout(async () => {
+    await sb.auth.signOut();
     location.href = "admin.html";
-  }, 2000);
+  }, 2500);
 });
 
-verifyLink();
+checkRecoverySession();
